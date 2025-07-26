@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import PencilKit
 
 // This blueprint struct is still very useful!
 struct Challenge: Identifiable {
@@ -16,8 +17,13 @@ struct Challenge: Identifiable {
 
 struct ContentView: View {
     
-    // Our state variable that holds the one, currently active challenge.
     @State private var currentChallenge: Challenge
+    @State private var canvasView = PKCanvasView()
+    @State private var timeRemaining = 45
+    @State private var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    @State private var isTimeUp = false
+    
+   
     
     // The initializer sets up the view's first state.
     init() {
@@ -59,22 +65,67 @@ struct ContentView: View {
                     .fontWeight(.medium)
                     .foregroundColor(.red)
             }
-            
-            Rectangle()
-                .fill(Color.gray.opacity(0.2))
-                .cornerRadius(10)
+            Text("Time: \(timeRemaining)")
+                .font(.largeTitle)
+                .fontWeight(.bold)
                 .padding()
             
-            Button("New Challenge") {
-                // The button's action now calls our generator function.
-                self.currentChallenge = generateNewChallenge()
-            }
-            .font(.title)
-            .padding()
-            .background(Color.blue)
-            .foregroundColor(.white)
-            .cornerRadius(10)
+            ZStack {
+                // The canvas is the bottom layer
+                DrawingCanvasView(canvas: $canvasView)
+                    .border(Color.gray, width: 1)
+                    .disabled(isTimeUp) // The disabled modifier is still here!
 
+                // We only show this text IF isTimeUp is true
+                if isTimeUp {
+                    Text("Time's Up!")
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+                        .foregroundColor(.white)
+                        .padding()
+                        .background(Color.black.opacity(0.75)) // Semi-transparent black background
+                        .cornerRadius(15)
+                }
+            }
+            .padding()
+            
+            HStack(spacing: 20) {
+                Button("Clear") {
+                    // This action clears the drawing inside our canvas object.
+                    canvasView.drawing = PKDrawing()
+                }
+                .font(.title2)
+                .padding()
+                .background(Color.orange)
+                .foregroundColor(.white)
+                .cornerRadius(10)
+
+                Button("New Challenge") {
+                    self.currentChallenge = generateNewChallenge()
+                    // Also clear the canvas for the new challenge
+                    canvasView.drawing = PKDrawing()
+                    self.timeRemaining = 45
+                    self.isTimeUp = false
+                    self.timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+                }
+                .font(.title2)
+                .padding()
+                .background(Color.blue)
+                .foregroundColor(.white)
+                .cornerRadius(10)
+            }
+
+        }
+        .onReceive(timer){_ in 
+            if timeRemaining > 0 {
+                // If so, decrease the time by 1.
+                timeRemaining -= 1
+            } else {
+                // If time runs out, stop the timer to save battery.
+                // We'll add more "game over" logic here later.
+                self.isTimeUp = true
+                timer.upstream.connect().cancel()
+            }
         }
         .padding()
     }
