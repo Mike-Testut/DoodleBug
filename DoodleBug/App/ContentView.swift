@@ -23,7 +23,9 @@ struct ContentView: View {
     @State private var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     @State private var isTimeUp = false
     
-   
+    let availableColors: [Color] = [.black, .red, .blue, .green, .yellow, .purple]
+       
+   @State private var selectedColor: Color = .black
     
     // The initializer sets up the view's first state.
     init() {
@@ -72,7 +74,7 @@ struct ContentView: View {
             
             ZStack {
                 // The canvas is the bottom layer
-                DrawingCanvasView(canvas: $canvasView)
+                DrawingCanvasView(canvas: $canvasView, selectedColor: selectedColor)
                     .border(Color.gray, width: 1)
                     .disabled(isTimeUp) // The disabled modifier is still here!
 
@@ -88,7 +90,23 @@ struct ContentView: View {
                 }
             }
             .padding()
-            
+            HStack {
+                // We loop through each color in our availableColors array
+                ForEach(availableColors, id: \.self) { color in
+                    Circle()
+                        .fill(color) // Fill the circle with the color
+                        .frame(width: 40, height: 40) // Give it a size
+                        // Add an overlay to show which color is selected
+                        .overlay(
+                            Circle()
+                                .stroke(Color.gray, lineWidth: selectedColor == color ? 3 : 0)
+                        )
+                        .onTapGesture {
+                            // When a color is tapped, update our state variable
+                            self.selectedColor = color
+                        }
+                }
+            }
             HStack(spacing: 20) {
                 Button("Clear") {
                     // This action clears the drawing inside our canvas object.

@@ -27,6 +27,8 @@ struct DrawingCanvasView: UIViewRepresentable {
     // This allows us to pass a binding to the PKCanvasView from our main view
     @Binding var canvas: PKCanvasView
     
+    let selectedColor: Color
+    
     // We create a coordinator to handle events
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
@@ -43,6 +45,6 @@ struct DrawingCanvasView: UIViewRepresentable {
     // This function is called if the SwiftUI state changes, allowing us to update the UIKit view.
     // We don't need it right now, but it's required.
     func updateUIView(_ uiView: PKCanvasView, context: Context) {
-        // No action needed here for our current setup
+        uiView.tool = PKInkingTool(.pen, color: UIColor(selectedColor), width: 15)
     }
 }
