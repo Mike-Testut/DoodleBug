@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		E51F6EE32E3432850002693E /* DoodleBug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DoodleBug.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E51F6EE32E3432850002693E /* DoodleBug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = DoodleBug.app; path = "/Users/michaeltestut/Documents/Coding/iOS/DoodleBug/build/Debug-iphoneos/DoodleBug.app"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -33,16 +33,7 @@
 			isa = PBXGroup;
 			children = (
 				E51F6EE52E3432850002693E /* DoodleBug */,
-				E51F6EE42E3432850002693E /* Products */,
 			);
-			sourceTree = "<group>";
-		};
-		E51F6EE42E3432850002693E /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				E51F6EE32E3432850002693E /* DoodleBug.app */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -95,7 +86,7 @@
 			mainGroup = E51F6EDA2E3432850002693E;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = E51F6EE42E3432850002693E /* Products */;
+			productRefGroup = E51F6EDA2E3432850002693E;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (

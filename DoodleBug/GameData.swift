@@ -7,6 +7,12 @@
 
 import Foundation
 
+struct Challenge: Identifiable {
+    let id = UUID()
+    let word: String
+    let constraint: String
+}
+
 // We'll create a struct to act as a namespace for our game's data.
 // This is cleaner than having global variables.
 struct GameData {
