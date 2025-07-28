@@ -44,8 +44,9 @@ struct DrawingCanvasView: UIViewRepresentable {
             // This function is called by PencilKit whenever the drawing changes.
             func canvasViewDrawingDidChange(_ canvasView: PKCanvasView) {
                 // We update the binding with the new drawing from the canvas.
-                parent.drawing = canvasView.drawing
-            }
+                DispatchQueue.main.async {
+                    self.parent.drawing = canvasView.drawing
+                    }            }
         }
     
     // This function creates the actual UIKit view (our canvas)

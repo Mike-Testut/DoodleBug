@@ -7,25 +7,23 @@
 
 
 import SwiftUI
+import Combine
 
 struct ShowWordView: View {
     @EnvironmentObject var gameManager: GameStateManager
     // Timer specific to this view
     @State private var timeRemaining = 5
-    let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    @State private var timerSubscription: AnyCancellable?
+//    let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    
+    
     
     var body: some View {
         VStack(spacing: 20) {
             Text("Get ready! \(timeRemaining)")
                 .font(.largeTitle)
-                .onReceive(timer) { _ in
-                    if timeRemaining > 0 {
-                        timeRemaining -= 1
-                    } else {
-                        gameManager.startDrawing()
-                    }
-                }
-            
+                .onAppear(perform: startTimer)
+                .onDisappear(perform: stopTimer)
             Spacer()
             
             if let challenge = gameManager.currentChallenge {
@@ -52,9 +50,29 @@ struct ShowWordView: View {
             
         }
         .padding()
-        .onDisappear {
-            // Stop the timer if the view disappears for any reason
-            timer.upstream.connect().cancel()
-        }
     }
+    
+    func startTimer() {
+          // Create the timer publisher
+          let timerPublisher = Timer.publish(every: 1, on: .main, in: .common)
+          
+          // Use .sink to handle the timer's output and store the subscription
+          self.timerSubscription = timerPublisher.autoconnect().sink { _ in
+              // This is the code that runs every second
+              if self.timeRemaining > 0 {
+                  self.timeRemaining -= 1
+              } else {
+                  // When time is up, stop the timer and change the phase
+                  self.stopTimer()
+                  self.gameManager.startDrawing()
+              }
+          }
+      }
+      
+      // 5. A function to stop the timer
+      func stopTimer() {
+          // Cancel the subscription to stop the timer
+          timerSubscription?.cancel()
+      }
+  
 }

@@ -10,6 +10,7 @@ import PencilKit
 
 struct ContentView: View {
     @EnvironmentObject var gameManager: GameStateManager
+    @Binding var isGameActive: Bool
     
     var body: some View {
         // We will build the new logic here
@@ -23,8 +24,12 @@ struct ContentView: View {
                     DrawingView()
                 case .guessing:       
                      GuessingView()
+                case .selectGuesser: 
+                    SelectGuesserView()
                 case .endOfTurn:
                     EndOfTurnView()
+                case .gameOver:
+                    ScoreboardView(isGameActive: $isGameActive)
                 }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -37,10 +42,7 @@ struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        let manager = GameStateManager()
-        // You might need to set up some dummy data for the preview to work well
-        manager.addPlayer(name: "Player 1")
-        manager.startGame()
-        return ContentView().environmentObject(manager)
+        ContentView(isGameActive: .constant(true))
+            .environmentObject(GameStateManager())
     }
 }

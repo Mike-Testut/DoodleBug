@@ -30,6 +30,12 @@ struct EndOfTurnView: View {
             }
             .buttonStyle(.borderedProminent)
             .font(.title)
+            
+            Button("End Game & View Scores") {
+                gameManager.endGame()
+            }
+            .tint(.red)
+            .padding(.top)
         }
     }
 }

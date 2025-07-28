@@ -17,7 +17,9 @@ enum TurnPhase {
     case showWord   // Screen showing the word ONLY to the drawer
     case drawing    // The main drawing screen
     case guessing  // Player guessing screen
+    case selectGuesser
     case endOfTurn  // Screen showing the word after the turn is over
+    case gameOver //scoreboard
 }
 
 struct Player: Identifiable, Equatable {
@@ -88,7 +90,40 @@ class GameStateManager: ObservableObject {
             currentPhase = .guessing
         }
       
+    func promptForGuesser() {
+        currentPhase = .selectGuesser
+    }
+
+    // This is called when a guesser is chosen from the new screen.
+    func awardPoints(to guesser: Player) {
+        // Award 2 points to the guesser
+        if let guesserIndex = players.firstIndex(where: { $0.id == guesser.id }) {
+            players[guesserIndex].score += 2
+        }
+        
+        // Award 1 point to the drawer for a successful drawing
+        if let drawerIndex = players.firstIndex(where: { $0.id == currentDrawer?.id }) {
+            players[drawerIndex].score += 1
+        }
+        
+        // After awarding points, the turn is over.
+        finishTurn()
+    }
+    
     func finishTurn() {
       currentPhase = .endOfTurn
+    }
+    
+    func endGame() {
+            currentPhase = .gameOver
+        }
+        
+    func resetScoresAndStartGame() {
+        // Reset the score for every player
+        for i in 0..<players.count {
+            players[i].score = 0
+        }
+        
+        startGame()
     }
 }

@@ -70,7 +70,10 @@ struct HomeView: View {
             // It activates when $isGameActive becomes true.
             .navigationDestination(isPresented: $isGameActive) {
                 // Pass our existing gameManager to the next screen
-                ContentView().environmentObject(gameManager)
+                ContentView(isGameActive: $isGameActive)
+                        .environmentObject(gameManager)
+                        // Hide the default back button to enforce our game flow
+                        .navigationBarBackButtonHidden(true) 
             }
         }
     }
